@@ -54,7 +54,6 @@ class AuthController extends Controller
         $accessToken = Auth::user()->createToken($token)->plainTextToken;
         $data = auth()->user();
         $user =  User::whereId($data->id)
-            ->with('profilePicture')
             ->first();
         $profileResource = new ProfileResource($user);
         return CustomResponse::successResponseWithData($profileResource, 'Profile data gotten', 200, $accessToken);
