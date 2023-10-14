@@ -16,6 +16,9 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+	public const TABLE_NAME = 'users';
+	public const ID = 'id';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -47,4 +50,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->where('username', $value)->orWhere('id', $value)->firstOrFail();
     }
+
+	public function accounts(): HasMany
+	{
+		return $this->hasMany(Account::class);
+	}
 }
