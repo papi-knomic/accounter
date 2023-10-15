@@ -25,4 +25,9 @@ class Account extends Model
 	{
 		return $this->hasMany(AccountEntry::class);
 	}
+
+	public function resolveRouteBinding($value, $field = null): ?Model
+	{
+		return $this->where(self::UUID, $value)->orWhere(self::ID, $value)->firstOrFail();
+	}
 }

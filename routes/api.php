@@ -43,13 +43,21 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
 			//update
 			Route::post('/', [AuthController::class, 'update'])->name('profile.update');
 			//logout
-			Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+			Route::post('/logout', [AuthController::class, 'logout'])->name('profile.logout');
 		});
 
 		Route::prefix('account')->group( function (){
-			// create account
+			//get account
+			Route::get('/{account}', [AccountController::class, ''])->name('account.get');
+			//create account
 			Route::post('/', [AccountController::class, 'create'])->name('account.create');
+			//update account
+			Route::patch('/{account}', [AccountController::class, 'update'])->name('account.update');
+			//delete account
+			Route::delete('/{account}', [AccountController::class, 'destroy'])->name('account.delete');
 		});
+
+		Route::get('accounts', [AccountController::class, 'getAll'])->name('accounts.get');
 	});
 
 });

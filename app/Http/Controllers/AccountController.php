@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAccountRequest;
+use App\Http\Requests\UpdateAccountRequest;
+use App\Http\Resources\AccountResource;
 use App\Models\Account;
 use App\Models\User;
 use App\Services\CustomResponse;
@@ -11,18 +13,11 @@ use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(CreateAccountRequest $request) : JsonResponse
+    public function store(CreateAccountRequest $request) : JsonResponse
     {
 		$fields = $request->validated();
 		$fields[Account::USER_ID] = auth()->id();
@@ -33,16 +28,9 @@ class AccountController extends Controller
 		}
 
 		$account = Account::create($fields);
+		$account = new AccountResource($account);
 
-		return CustomResponse::successResponseWithData($account);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+		return CustomResponse::successResponseWithData($account, 'Account has been created', 201);
     }
 
     /**
@@ -50,23 +38,32 @@ class AccountController extends Controller
      */
     public function show(Account $account)
     {
-        //
+	    $account = new AccountResource($account);
+
+	    return CustomResponse::successResponseWithData($account,);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Get User Accounts
      */
-    public function edit(Account $account)
+    public function getAll()
     {
-        //
+        $accounts = auth()->user()->accounts;
+
+		$accounts = AccountResource::collection($accounts);
+
+	    return CustomResponse::successResponseWithData($accounts);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Account $account)
+    public function update(UpdateAccountRequest $request, Account $account)
     {
-        //
+		$fields = $request->validated();
+        $account::update($fields);
+
+	    return CustomResponse::successResponseWithData($account);
     }
 
     /**
