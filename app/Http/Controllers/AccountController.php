@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAccountRequest;
 use App\Models\Account;
+use App\Models\User;
 use App\Services\CustomResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,6 +26,11 @@ class AccountController extends Controller
     {
 		$fields = $request->validated();
 		$fields[Account::USER_ID] = auth()->id();
+		$accountsCount = auth()->user()->accounts()->count();
+
+		if ($accountsCount >= 5) {
+			return CustomResponse::errorResponse('You can not have more than 5 accounts');
+		}
 
 		$account = Account::create($fields);
 
