@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VerificationCodeController;
 use App\Services\CustomResponse;
@@ -36,13 +37,18 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
 
 	//protected routes
 	Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
-		Route::prefix('account')->group(function () {
+		Route::prefix('profile')->group(function () {
 			//view your profile
-			Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+			Route::get('/', [AuthController::class, 'profile'])->name('profile');
 			//update
-			Route::post('/profile', [AuthController::class, 'update'])->name('profile.update');
+			Route::post('/', [AuthController::class, 'update'])->name('profile.update');
 			//logout
 			Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+		});
+
+		Route::prefix('account')->group( function (){
+			// create account
+			Route::post('/', [AccountController::class, 'create'])->name('account.create');
 		});
 	});
 

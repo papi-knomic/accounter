@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateAccountRequest;
-use App\Models\Account;
-use App\Services\CustomResponse;
-use Illuminate\Http\JsonResponse;
+use App\Models\AccountEntry;
 use Illuminate\Http\Request;
 
-class AccountController extends Controller
+class AccountEntryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,14 +18,9 @@ class AccountController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(CreateAccountRequest $request) : JsonResponse
+    public function create()
     {
-		$fields = $request->validated();
-		$fields[Account::USER_ID] = auth()->id();
-
-		$account = Account::create($fields);
-
-		return CustomResponse::successResponseWithData($account);
+        //
     }
 
     /**
@@ -42,7 +34,7 @@ class AccountController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Account $account)
+    public function show(AccountEntry $accountEntry)
     {
         //
     }
@@ -50,7 +42,7 @@ class AccountController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Account $account)
+    public function edit(AccountEntry $accountEntry)
     {
         //
     }
@@ -58,7 +50,7 @@ class AccountController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Account $account)
+    public function update(Request $request, AccountEntry $accountEntry)
     {
         //
     }
@@ -66,7 +58,7 @@ class AccountController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Account $account)
+    public function destroy(AccountEntry $accountEntry)
     {
         //
     }

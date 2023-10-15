@@ -68,10 +68,11 @@ class AuthController extends Controller
     public function update( UpdateProfileRequest $request ) : JsonResponse
     {
         $fields = $request->validated();
+		$userID = \auth()->id();
 
-        $update = $this->userRepository->update($fields);
+        $this->userRepository->update($fields);
 
-        $user = User::whereId($update)->first();
+        $user = User::find($userID);
         $profileResource = new ProfileResource($user);
 
         return CustomResponse::successResponseWithData( $profileResource,'Profile updated', 201);

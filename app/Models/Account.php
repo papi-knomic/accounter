@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\UUID;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Account extends Model
 {
-    use HasFactory;
+    use UUID, HasFactory;
 
 	protected $guarded = ['id', 'uuid'];
 
@@ -18,4 +20,9 @@ class Account extends Model
 	public const BALANCE = 'balance';
 	public const TRANSACTION_COUNT = 'transaction_count';
 	public const USER_ID = 'user_id';
+
+	public function entries() : HasMany
+	{
+		return $this->hasMany(AccountEntry::class);
+	}
 }
