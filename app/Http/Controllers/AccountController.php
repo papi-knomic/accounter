@@ -6,6 +6,7 @@ use App\Http\Requests\CreateAccountRequest;
 use App\Http\Requests\UpdateAccountRequest;
 use App\Http\Resources\AccountResource;
 use App\Models\Account;
+use App\Models\AccountEntry;
 use App\Models\User;
 use App\Services\CustomResponse;
 use Illuminate\Http\JsonResponse;
@@ -61,6 +62,11 @@ class AccountController extends Controller
     public function update(UpdateAccountRequest $request, Account $account)
     {
 		$fields = $request->validated();
+		if (!empty($fields[Account::BALANCE])) {
+			if (AccountEntry::where('account_id', $account->id)->exists()) {
+				return CustomResponse::errorResponse('');
+			}
+		}
         $account::update($fields);
 
 	    return CustomResponse::successResponseWithData($account);
@@ -71,6 +77,8 @@ class AccountController extends Controller
      */
     public function destroy(Account $account)
     {
-        //
+        $account->delete();
+
+	    return CustomResponse::successResponse('Account deleted successfully');
     }
 }

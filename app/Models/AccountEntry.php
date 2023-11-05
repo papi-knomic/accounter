@@ -21,6 +21,7 @@ class AccountEntry extends Model
 	public const DEBIT = 'debit';
 	public const TYPES = [ self::CREDIT, self::DEBIT];
 	public const ACCOUNT_ID = 'account_id';
+	public const DATE = 'date';
 
 
 	protected $guarded = [ self::ID, self::UUID ];

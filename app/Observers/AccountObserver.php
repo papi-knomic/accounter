@@ -15,10 +15,11 @@ class AccountObserver
     {
         $balance = $account[Account::BALANCE];
 
-		if ($balance > 0 ) {
+		if ($balance > 0) {
 			$description = 'Initial Balance';
 			AccountEntryService::create($description, AccountEntry::CREDIT, $balance, $account->id);
-			$account::increment(Account::TRANSACTION_COUNT);
+			$account->transaction_count++;
+			$account->save();
 		}
     }
 
@@ -35,7 +36,7 @@ class AccountObserver
      */
     public function deleted(Account $account): void
     {
-        //
+	    $account->entries()->delete();
     }
 
     /**

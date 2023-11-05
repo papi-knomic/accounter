@@ -48,9 +48,9 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
 
 		Route::prefix('account')->group( function (){
 			//get account
-			Route::get('/{account}', [AccountController::class, ''])->name('account.get');
+			Route::get('/{account}', [AccountController::class, 'show'])->name('account.get');
 			//create account
-			Route::post('/', [AccountController::class, 'create'])->name('account.create');
+			Route::post('/', [AccountController::class, 'store'])->name('account.create');
 			//update account
 			Route::patch('/{account}', [AccountController::class, 'update'])->name('account.update');
 			//delete account

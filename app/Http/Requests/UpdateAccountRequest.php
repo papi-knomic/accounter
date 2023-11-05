@@ -36,7 +36,6 @@ class UpdateAccountRequest extends FormRequest
 		        'numeric',
 		        'min:0',
 		        'max:100000000',
-		        new NoAccountEntriesRule($this->route('account')),
 	        ],
         ];
     }

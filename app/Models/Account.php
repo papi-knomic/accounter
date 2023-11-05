@@ -30,4 +30,14 @@ class Account extends Model
 	{
 		return $this->where(self::UUID, $value)->orWhere(self::ID, $value)->firstOrFail();
 	}
+
+	public function totalCredit(): float
+	{
+		return $this->entries()->where(AccountEntry::TYPE, AccountEntry::CREDIT)->sum(AccountEntry::AMOUNT);
+	}
+
+	public function totalDebit(): float
+	{
+		return $this->entries()->where(AccountEntry::TYPE, AccountEntry::DEBIT)->sum(AccountEntry::AMOUNT);
+	}
 }

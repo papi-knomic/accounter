@@ -20,6 +20,7 @@ return new class extends Migration
 			$table->float(AccountEntry::AMOUNT, 10);
 			$table->enum(AccountEntry::TYPE, AccountEntry::TYPES);
 	        $table->foreignId(AccountEntry::ACCOUNT_ID)->references(Account::ID)->on(Account::TABLE_NAME)->onDelete('cascade');
+			$table->timestamp(AccountEntry::DATE);
 	        $table->timestamps();
         });
     }
