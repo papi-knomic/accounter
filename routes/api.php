@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AccountEntryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VerificationCodeController;
 use App\Services\CustomResponse;
@@ -47,6 +48,8 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
 		});
 
 		Route::prefix('account')->group( function (){
+			//get entries
+			Route::get('entries', [AccountEntryController::class, 'index'])->name('entries.get');
 			//get account
 			Route::get('/{account}', [AccountController::class, 'show'])->name('account.get');
 			//create account
@@ -55,6 +58,17 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
 			Route::patch('/{account}', [AccountController::class, 'update'])->name('account.update');
 			//delete account
 			Route::delete('/{account}', [AccountController::class, 'destroy'])->name('account.delete');
+
+			Route::prefix('/entry')->group( function () {
+				//get entry
+				Route::get('/{entry}', [AccountEntryController::class, 'show'])->name('entry.get');
+				//get entry
+				Route::post('/', [AccountEntryController::class, 'store'])->name('entry.create');
+				//update entry
+				Route::put('/{entry}', [AccountEntryController::class, 'update'])->name('entry.update');
+				//delete entry
+				Route::delete('/{entry}', [AccountEntryController::class, 'destroy'])->name('entry.delete');
+			});
 		});
 
 		Route::get('accounts', [AccountController::class, 'getAll'])->name('accounts.get');

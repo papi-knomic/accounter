@@ -24,15 +24,16 @@ class UpdateAccountRequest extends FormRequest
 	 */
     public function rules(): array
     {
+	    $account = $this->route('account');
         return [
 	        Account::ACCOUNT_NAME => [
 		        'required',
-		        Rule::unique(Account::TABLE_NAME, Account::ACCOUNT_NAME)->where(function ($query) {
-			        return $query->where(Account::USER_ID, $this->user()->id); // Assuming user ID is stored in the 'user_id' field in the 'accounts' table
-		        }),
+		        Rule::unique(Account::TABLE_NAME, Account::ACCOUNT_NAME)->where(function ($query) use($account) {
+			        return $query->where(Account::USER_ID, $this->user()->id)
+				        ->where(Account::ID, '!=', $account->id);
+				}),
 	        ],
 	        Account::BALANCE => [
-		        'required',
 		        'numeric',
 		        'min:0',
 		        'max:100000000',

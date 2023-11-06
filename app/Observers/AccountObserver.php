@@ -28,7 +28,15 @@ class AccountObserver
      */
     public function updated(Account $account): void
     {
-        //
+        $transactionCount = $account[Account::TRANSACTION_COUNT];
+	    $balance = $account[Account::BALANCE];
+
+	    if ($transactionCount == 0 && $balance > 0) {
+		    $description = 'Initial Balance';
+		    AccountEntryService::create($description, AccountEntry::CREDIT, $balance, $account->id);
+		    $account->transaction_count++;
+		    $account->save();
+	    }
     }
 
     /**

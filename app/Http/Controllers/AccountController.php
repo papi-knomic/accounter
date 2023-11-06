@@ -64,10 +64,10 @@ class AccountController extends Controller
 		$fields = $request->validated();
 		if (!empty($fields[Account::BALANCE])) {
 			if (AccountEntry::where('account_id', $account->id)->exists()) {
-				return CustomResponse::errorResponse('');
+				return CustomResponse::errorResponse('This account already has an entry you can not edit');
 			}
 		}
-        $account::update($fields);
+       $account->update($fields);
 
 	    return CustomResponse::successResponseWithData($account);
     }

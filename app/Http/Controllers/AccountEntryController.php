@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AccountEntryResource;
 use App\Models\AccountEntry;
+use App\Services\CustomResponse;
 use Illuminate\Http\Request;
 
 class AccountEntryController extends Controller
@@ -12,15 +14,10 @@ class AccountEntryController extends Controller
      */
     public function index()
     {
-        //
-    }
+		$entries = auth()->user()->accountEntries();
+		$entries = AccountEntryResource::collection($entries);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+		return CustomResponse::successResponseWithData($entries);
     }
 
     /**
@@ -39,13 +36,6 @@ class AccountEntryController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(AccountEntry $accountEntry)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.

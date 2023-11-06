@@ -53,4 +53,40 @@ class User extends Authenticatable implements MustVerifyEmail
 	{
 		return $this->hasMany(Account::class);
 	}
+
+	public function totalAmount(): float
+	{
+		return $this->accounts()->sum(Account::BALANCE);
+	}
+
+	public function totalCredit(): float
+	{
+		$total = 0.0;
+		$accounts = $this->accounts;
+
+		foreach ($accounts as $account) {
+			$total += $account->totalCredit();
+		}
+
+		return $total;
+	}
+
+	public function totalDebit(): float
+	{
+		$total = 0.0;
+		$accounts = $this->accounts;
+
+		foreach ($accounts as $account) {
+			$total += $account->totalDebit();
+		}
+
+		return $total;
+	}
+
+	public function accountEntries()
+	{
+		$accountIds = $this->accounts->pluck(Account::ID)->toArray();
+
+		return AccountEntry::whereIn(AccountEntry::ACCOUNT_ID, $accountIds)->latest(AccountEntry::DATE)->paginate(25);
+	}
 }
