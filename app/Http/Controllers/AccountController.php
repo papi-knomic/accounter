@@ -22,6 +22,8 @@ class AccountController extends Controller
     {
 		$fields = $request->validated();
 		$fields[Account::USER_ID] = auth()->id();
+		$fields[Account::BALANCE] = 0;
+		$fields[Account::TRANSACTION_COUNT] = 0;
 		$accountsCount = auth()->user()->accounts()->count();
 
 		if ($accountsCount >= 5) {

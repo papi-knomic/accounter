@@ -11,7 +11,19 @@ class AccountEntryObserver
      */
     public function created(AccountEntry $accountEntry): void
     {
-        //
+	    $account = $accountEntry->account;
+	    $type = $accountEntry->type;
+
+	    if ($type === AccountEntry::DEBIT) {
+		    $account->balance -= $accountEntry->amount;
+	    } else {
+		    $account->balance += $accountEntry->amount;
+	    }
+
+	    $account->transaction_count++;
+
+	    // Save the updated account
+	    $account->save();
     }
 
     /**

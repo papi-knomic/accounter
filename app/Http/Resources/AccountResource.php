@@ -18,6 +18,7 @@ class AccountResource extends JsonResource
 	    $request = parent::toArray($request);
 
         return [
+			Account::ID => $request[Account::ID],
 			Account::UUID => $request[Account::UUID],
 	        Account::ACCOUNT_NAME => $request[Account::ACCOUNT_NAME],
 	        Account::BALANCE => $request[Account::BALANCE],

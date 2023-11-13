@@ -8,18 +8,11 @@ use Carbon\Carbon;
 class AccountEntryService
 {
 
-	public static function create( string $description, string $type, float $amount, int $accountID, $date = '' ) : AccountEntry
+	public static function create( array $data ) : AccountEntry
 	{
-		if (empty($date)) {
-			$date = Carbon::now()->toDateTimeString();
+		if (empty($data[AccountEntry::DATE])) {
+			$data[AccountEntry::DATE] = Carbon::now()->toDateTimeString();
 		}
-		$data = [
-			AccountEntry::DESCRIPTION => $description,
-			AccountEntry::TYPE => $type,
-			AccountEntry::AMOUNT => $amount,
-			AccountEntry::ACCOUNT_ID => $accountID,
-			AccountEntry::DATE => $date
-		];
 
 		return AccountEntry::create($data);
 	}

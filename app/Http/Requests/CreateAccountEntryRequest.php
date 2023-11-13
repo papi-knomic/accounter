@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Account;
+use App\Models\AccountEntry;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateAccountEntryRequest extends FormRequest
 {
@@ -11,18 +15,29 @@ class CreateAccountEntryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
+	/**
+	 * Get the validation rules that apply to the request.
+	 *
+	 * @return array
+	 */
     public function rules(): array
     {
         return [
-            //
+	        AccountEntry::DESCRIPTION => 'required|string',
+	        AccountEntry::AMOUNT => [
+		        'required',
+		        'numeric',
+		        'min:1',
+	        ],
+	        AccountEntry::TYPE => [
+		        'required',
+		        Rule::in(AccountEntry::TYPES),
+	        ],
+	        AccountEntry::ACCOUNT_ID => 'required|exists:' . Account::TABLE_NAME . ',' . Account::ID,
+	        AccountEntry::DATE => 'nullable|date'
         ];
     }
 }
