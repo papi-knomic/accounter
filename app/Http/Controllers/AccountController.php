@@ -53,7 +53,7 @@ class AccountController extends Controller
     {
         $accounts = auth()->user()->accounts;
 
-		$accounts = AccountResource::collection($accounts);
+		$accounts = AccountResource::collection($accounts)->response()->getData(true);
 
 	    return CustomResponse::successResponseWithData($accounts);
     }
