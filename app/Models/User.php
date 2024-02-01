@@ -83,9 +83,9 @@ class User extends Authenticatable implements MustVerifyEmail
 		return $total;
 	}
 
-	public function accountEntries()
+	public function accountEntries($accountId = null)
 	{
-		$accountIds = $this->accounts->pluck(Account::ID)->toArray();
+		$accountIds = $accountId ? [$accountId] : $this->accounts->pluck(Account::ID)->toArray();
 
 		return AccountEntry::whereIn(AccountEntry::ACCOUNT_ID, $accountIds)->latest(AccountEntry::DATE)->paginate(25);
 	}

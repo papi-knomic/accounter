@@ -17,9 +17,15 @@ class AccountEntryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-		$entries = auth()->user()->accountEntries();
+	    $account_id = $request->input('account_id');
+
+	    if ($account_id && !auth()->user()->accounts->pluck(Account::ID)->contains($account_id)) {
+		    return CustomResponse::errorResponse('Unauthorized', 403);
+	    }
+
+	    $entries = auth()->user()->accountEntries($account_id);
 		$entries = AccountEntryResource::collection($entries);
 
 		return CustomResponse::successResponseWithData($entries);
@@ -60,16 +66,18 @@ class AccountEntryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(AccountEntry $accountEntry)
+    public function show(AccountEntry $accountEntry): JsonResponse
     {
-        //
+	    $entry = new AccountEntryResource($accountEntry);
+
+	    return CustomResponse::successResponseWithData($entry);
     }
 
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, AccountEntry $accountEntry)
+    public function update(CreateAccountEntryRequest $request, AccountEntry $accountEntry)
     {
         //
     }

@@ -49,7 +49,7 @@ class AccountController extends Controller
     /**
      * Get User Accounts
      */
-    public function getAll()
+    public function getAll(): JsonResponse
     {
         $accounts = auth()->user()->accounts;
 
@@ -61,7 +61,7 @@ class AccountController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAccountRequest $request, Account $account)
+    public function update(UpdateAccountRequest $request, Account $account): JsonResponse
     {
 		$fields = $request->validated();
 		if (!empty($fields[Account::BALANCE])) {
@@ -77,7 +77,7 @@ class AccountController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Account $account)
+    public function destroy(Account $account): JsonResponse
     {
         $account->delete();
 
