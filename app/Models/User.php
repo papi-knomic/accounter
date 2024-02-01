@@ -59,7 +59,7 @@ class User extends Authenticatable implements MustVerifyEmail
 		return $this->accounts()->sum(Account::BALANCE);
 	}
 
-	public function totalCredit(): float
+	public function totalCredit(): string
 	{
 		$total = 0.0;
 		$accounts = $this->accounts;
@@ -68,10 +68,10 @@ class User extends Authenticatable implements MustVerifyEmail
 			$total += $account->totalCredit();
 		}
 
-		return $total;
+		return number_format($total, 2);
 	}
 
-	public function totalDebit(): float
+	public function totalDebit(): string
 	{
 		$total = 0.0;
 		$accounts = $this->accounts;
@@ -80,7 +80,7 @@ class User extends Authenticatable implements MustVerifyEmail
 			$total += $account->totalDebit();
 		}
 
-		return $total;
+		return number_format($total, 2);
 	}
 
 	public function accountEntries($accountId = null)

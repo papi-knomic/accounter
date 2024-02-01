@@ -21,10 +21,10 @@ class AccountResource extends JsonResource
 			Account::ID => $request[Account::ID],
 			Account::UUID => $request[Account::UUID],
 	        Account::ACCOUNT_NAME => $request[Account::ACCOUNT_NAME],
-	        Account::BALANCE => $request[Account::BALANCE],
+	        Account::BALANCE => number_format($request[Account::BALANCE], 2),
 	        Account::TRANSACTION_COUNT => $request[Account::TRANSACTION_COUNT] ?? 0,
-	        'total_credit' => $this->totalCredit(),
-	        'total_debit' => $this->totalDebit(),
+	        'total_credit' => number_format($this->totalCredit(), 2),
+	        'total_debit' => number_format($this->totalDebit(), 2),
         ];
     }
 }

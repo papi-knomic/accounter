@@ -24,7 +24,7 @@ class ProfileResource extends JsonResource
             "email_verified" => (bool)$this->email_verified_at,
 	        "accounts" =>  AccountResource::collection($this->accounts),
 	        "total_accounts" => $this->accounts->count(),
-	        "total_balance" => $this->totalAmount(),
+	        "total_balance" => number_format($this->totalAmount(), 2),
 	        "total_credit" => $this->totalCredit(),
 	        "total_debit" => $this->totalDebit()
         ];
