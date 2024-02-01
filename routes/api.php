@@ -61,13 +61,13 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
 
 			Route::prefix('/entry')->group( function () {
 				//get entry
-				Route::get('/{entry}', [AccountEntryController::class, 'show'])->name('entry.get');
+				Route::get('/{accountEntry}', [AccountEntryController::class, 'show'])->name('entry.get');
 				//get entry
 				Route::post('/', [AccountEntryController::class, 'store'])->name('entry.create');
 				//update entry
-				Route::put('/{entry}', [AccountEntryController::class, 'update'])->name('entry.update');
+				Route::put('/{accountEntry}', [AccountEntryController::class, 'update'])->name('entry.update');
 				//delete entry
-				Route::delete('/{entry}', [AccountEntryController::class, 'destroy'])->name('entry.delete');
+				Route::delete('/{accountEntry}', [AccountEntryController::class, 'destroy'])->name('entry.delete');
 			});
 		});
 

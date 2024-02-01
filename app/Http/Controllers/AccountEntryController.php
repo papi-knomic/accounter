@@ -17,7 +17,7 @@ class AccountEntryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
 	    $account_id = $request->input('account_id');
 
@@ -26,7 +26,7 @@ class AccountEntryController extends Controller
 	    }
 
 	    $entries = auth()->user()->accountEntries($account_id);
-		$entries = AccountEntryResource::collection($entries);
+		$entries = AccountEntryResource::collection($entries)->response()->getData(true);
 
 		return CustomResponse::successResponseWithData($entries);
     }
@@ -77,16 +77,22 @@ class AccountEntryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CreateAccountEntryRequest $request, AccountEntry $accountEntry)
+    public function update(CreateAccountEntryRequest $request, AccountEntry $accountEntry): JsonResponse
     {
-        //
+	    // Validate and update the account entry
+	   $fields = $request->validated();
+
+	   $accountEntry->update($fields);
+	   return CustomResponse::successResponse('Account entry updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AccountEntry $accountEntry)
+    public function destroy(AccountEntry $accountEntry): JsonResponse
     {
-        //
+		$accountEntry->delete();
+
+	    return CustomResponse::successResponse('Account entry deleted successfully');
     }
 }

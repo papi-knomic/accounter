@@ -31,7 +31,22 @@ class AccountEntryObserver
      */
     public function updated(AccountEntry $accountEntry): void
     {
-        //
+	    $originalAmount = $accountEntry->getOriginal('amount');
+	    $newAmount = $accountEntry->amount;
+	    $type = $accountEntry->type;
+	    $account = $accountEntry->account;
+
+	    // Check if the amount has been altered
+	    if ($originalAmount != $newAmount) {
+			if ($type === AccountEntry::DEBIT) {
+				$account->balance += $originalAmount;
+				$account->balance -= $newAmount;
+			} else {
+				$account->balance -= $originalAmount;
+				$account->balance += $newAmount;
+			}
+	    }
+	    $account->save();
     }
 
     /**
