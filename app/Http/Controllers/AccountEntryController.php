@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAccountEntryRequest;
+use App\Http\Requests\UpdateAccountEntryRequest;
 use App\Http\Resources\AccountEntryResource;
 use App\Models\Account;
 use App\Models\AccountEntry;
@@ -77,7 +78,7 @@ class AccountEntryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CreateAccountEntryRequest $request, AccountEntry $accountEntry): JsonResponse
+    public function update(UpdateAccountEntryRequest $request, AccountEntry $accountEntry): JsonResponse
     {
 	    // Validate and update the account entry
 	   $fields = $request->validated();

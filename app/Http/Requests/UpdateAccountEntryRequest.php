@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Account;
+use App\Models\AccountEntry;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateAccountEntryRequest extends FormRequest
 {
@@ -11,7 +14,7 @@ class UpdateAccountEntryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +24,16 @@ class UpdateAccountEntryRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+	    return [
+		    AccountEntry::DESCRIPTION => 'string',
+		    AccountEntry::AMOUNT => [
+			    'numeric',
+			    'min:1',
+		    ],
+		    AccountEntry::TYPE => [
+			    Rule::in(AccountEntry::TYPES),
+		    ],
+		    AccountEntry::DATE => 'nullable|date'
+	    ];
     }
 }
