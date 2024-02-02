@@ -30,7 +30,7 @@ if (!function_exists('generateVerificationCodeForUser')) {
 }
 
 if ( !function_exists('getUserFirstNameFromEmail') ) {
-    function getUserFirstNameFromEmail( string $email )
+    function getUserFirstNameFromEmail( string $email ): bool
     {
         $user = User::where('email', $email)->first();
 

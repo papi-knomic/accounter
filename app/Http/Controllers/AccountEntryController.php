@@ -22,7 +22,7 @@ class AccountEntryController extends Controller
     {
 	    $account_id = $request->input('account_id');
 
-	    if ($account_id && !auth()->user()->accounts->pluck(Account::ID)->contains($account_id)) {
+	    if ($account_id && !accountBelongsToUser($account_id)) {
 		    return CustomResponse::errorResponse('Unauthorized', 403);
 	    }
 
