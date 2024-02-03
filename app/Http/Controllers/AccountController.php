@@ -8,6 +8,7 @@ use App\Http\Resources\AccountResource;
 use App\Models\Account;
 use App\Models\AccountEntry;
 use App\Models\User;
+use App\Repositories\AccountRepository;
 use App\Services\CustomResponse;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -15,6 +16,15 @@ use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
+	/**
+	 * @var AccountRepository
+	 */
+	private $accountRepository;
+
+	public function __construct(AccountRepository $accountRepository)
+	{
+		$this->accountRepository = $accountRepository;
+	}
 
     /**
      * Show the form for creating a new resource.
@@ -94,7 +104,7 @@ class AccountController extends Controller
 		$date = $request->input('date');
 		$account_id = $request->input('account_id');
 
-		if ($date && !strtotime($date)) {
+		if ($date && !isValidDate($date)) {
 			return CustomResponse::errorResponse('Please pass valid date', 401);
 		}
 
@@ -106,31 +116,18 @@ class AccountController extends Controller
 			return CustomResponse::errorResponse('Account id is not valid', 403);
 		}
 
-		$account_ids = $account_id ? [$account_id] : auth()->user()->accounts->pluck(Account::ID)->toArray();
+		$account_ids = $account_id ? [$account_id] : getUserAccountsID();
 
-		$entries = AccountEntry::whereIn(AccountEntry::ACCOUNT_ID, $account_ids)
-			->whereDate(AccountEntry::DATE, '=', Carbon::parse($date)->toDateString())
-			->selectRaw('SUM(CASE WHEN type = "debit" THEN amount ELSE 0 END) as debitSum')
-			->selectRaw('SUM(CASE WHEN type = "credit" THEN amount ELSE 0 END) as creditSum')
-			->selectRaw('COUNT(CASE WHEN type = "debit" THEN 1 END) as debitCount')
-			->selectRaw('COUNT(CASE WHEN type = "credit" THEN 1 END) as creditCount')
-			->selectRaw('COUNT(*) as totalCount')
-			->first();
+		// Check if the date is a range
+		if (str_contains($date, ',')) {
+			$dates = explode(',', $date);
+			$startDate = trim($dates[0]);
+			$endDate = trim($dates[1]);
 
-		$debitSum = $entries->debitSum;
-		$creditSum = $entries->creditSum;
-		$debitCount = $entries->debitCount;
-		$creditCount = $entries->creditCount;
-		$totalCount = $entries->totalCount;
-
-		$data = [
-			'date' => $date,
-			Account::TRANSACTION_COUNT => $totalCount,
-			'credit_count' => $creditCount,
-			'debit_count' => $debitCount,
-			'total_credit' => number_format($creditSum, 2),
-			'total_debit' => number_format($debitSum, 2),
-		];
+			$data = $this->accountRepository->getRangeSummary($startDate, $endDate, $account_ids);
+		} else {
+			$data = $this->accountRepository->getDailySummary($date, $account_ids);
+		}
 
 		return CustomResponse::successResponseWithData($data);
 	}
