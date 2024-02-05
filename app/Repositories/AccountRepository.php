@@ -64,6 +64,8 @@ class AccountRepository implements AccountRepositoryInterface
 		// Calculate daily averages
 		$dailyAverageDebit = ($daysCount > 0) ? ($debitSum / $daysCount) : 0;
 		$dailyAverageCredit = ($daysCount > 0) ? ($creditSum / $daysCount) : 0;
+		$dailyAverageDebitCount = ($daysCount > 0) ? ($debitCount / $daysCount) : 0;
+		$dailyAverageCreditCount = ($daysCount > 0) ? ($creditCount / $daysCount) : 0;
 		$dailyAverageTransaction = ($daysCount > 0) ? ($totalCount / $daysCount) : 0;
 
 		return [
@@ -76,6 +78,8 @@ class AccountRepository implements AccountRepositoryInterface
 			'total_debit' => number_format($debitSum, 2),
 			'daily_average_debit' => number_format($dailyAverageDebit, 2),
 			'daily_average_credit' => number_format($dailyAverageCredit, 2),
+			'daily_average_debit_count' => number_format($dailyAverageDebitCount, 2),
+			'daily_average_credit_count' => number_format($dailyAverageCreditCount, 2),
 			'daily_average_transaction' => number_format($dailyAverageTransaction, 2),
 		];
 	}
