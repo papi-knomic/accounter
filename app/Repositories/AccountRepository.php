@@ -67,6 +67,7 @@ class AccountRepository implements AccountRepositoryInterface
 		$dailyAverageDebitCount = ($daysCount > 0) ? ($debitCount / $daysCount) : 0;
 		$dailyAverageCreditCount = ($daysCount > 0) ? ($creditCount / $daysCount) : 0;
 		$dailyAverageTransaction = ($daysCount > 0) ? ($totalCount / $daysCount) : 0;
+		$balance = $creditSum - $debitSum;
 
 		return [
 			'start_date' => $startDate->toDateString(),
@@ -76,6 +77,7 @@ class AccountRepository implements AccountRepositoryInterface
 			'debit_count' => $debitCount,
 			'total_credit' => number_format($creditSum, 2),
 			'total_debit' => number_format($debitSum, 2),
+			'balance' => number_format($balance, 2),
 			'daily_average_debit' => number_format($dailyAverageDebit, 2),
 			'daily_average_credit' => number_format($dailyAverageCredit, 2),
 			'daily_average_debit_count' => number_format($dailyAverageDebitCount, 2),
