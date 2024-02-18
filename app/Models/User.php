@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -83,10 +84,23 @@ class User extends Authenticatable implements MustVerifyEmail
 		return number_format($total, 2);
 	}
 
-	public function accountEntries($accountId = null)
+	public function accountEntries($accountId = null, string $keyword = '', $startDate = '', $endDate = '')
 	{
 		$accountIds = $accountId ? [$accountId] : $this->accounts->pluck(Account::ID)->toArray();
 
-		return AccountEntry::whereIn(AccountEntry::ACCOUNT_ID, $accountIds)->latest(AccountEntry::DATE)->paginate(25);
+		$entries = AccountEntry::whereIn(AccountEntry::ACCOUNT_ID, $accountIds)
+			->where(AccountEntry::DESCRIPTION, 'LIKE', "%$keyword%");
+
+		if ( !empty($endDate)) {
+			$startDate = Carbon::parse($startDate)->startOfDay();
+			$endDate = Carbon::parse($endDate)->endOfDay();
+			$entries->whereBetween(AccountEntry::DATE, [$startDate, $endDate]);
+		} else {
+			if (!empty( $startDate) ) {
+				$entries->whereDate(AccountEntry::DATE, '=', Carbon::parse($startDate)->toDateString());
+			}
+		}
+
+		return $entries->latest(AccountEntry::DATE)->paginate(25);
 	}
 }

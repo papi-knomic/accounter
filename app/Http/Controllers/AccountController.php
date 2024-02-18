@@ -19,7 +19,7 @@ class AccountController extends Controller
 	/**
 	 * @var AccountRepository
 	 */
-	private $accountRepository;
+	private AccountRepository $accountRepository;
 
 	public function __construct(AccountRepository $accountRepository)
 	{
@@ -103,6 +103,7 @@ class AccountController extends Controller
 	{
 		$date = $request->input('date');
 		$account_id = $request->input('account_id');
+		$keyword = $request->input('keyword') ?? '';
 
 		if ($date && !isValidDate($date)) {
 			return CustomResponse::errorResponse('Please pass valid date', 401);
@@ -124,9 +125,9 @@ class AccountController extends Controller
 			$startDate = trim($dates[0]);
 			$endDate = trim($dates[1]);
 
-			$data = $this->accountRepository->getRangeSummary($startDate, $endDate, $account_ids);
+			$data = $this->accountRepository->getRangeSummary($startDate, $endDate, $account_ids, $keyword);
 		} else {
-			$data = $this->accountRepository->getDailySummary($date, $account_ids);
+			$data = $this->accountRepository->getDailySummary($date, $account_ids, $keyword);
 		}
 
 		return CustomResponse::successResponseWithData($data);

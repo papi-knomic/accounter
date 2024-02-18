@@ -21,12 +21,31 @@ class AccountEntryController extends Controller
     public function index(Request $request): JsonResponse
     {
 	    $account_id = $request->input('account_id');
+		$keyword = $request->input('keyword') ?? '';
+		$date = $request->input('date');
 
 	    if ($account_id && !accountBelongsToUser($account_id)) {
 		    return CustomResponse::errorResponse('Unauthorized', 403);
 	    }
 
-	    $entries = auth()->user()->accountEntries($account_id);
+		$startDate = '';
+		$endDate = '';
+
+		if ($date) {
+			if (!isValidDate($date)) {
+				return CustomResponse::errorResponse('Please pass valid date', 401);
+			}
+
+			if (str_contains($date, ',')) {
+				$dates = explode(',', $date);
+				$startDate = trim($dates[0]);
+				$endDate = trim($dates[1]);
+			} else {
+				$startDate = $date;
+			}
+		}
+
+		$entries = auth()->user()->accountEntries($account_id, $keyword, $startDate, $endDate);
 		$entries = AccountEntryResource::collection($entries)->response()->getData(true);
 
 		return CustomResponse::successResponseWithData($entries);

@@ -11,9 +11,10 @@ use Carbon\CarbonPeriod;
 class AccountRepository implements AccountRepositoryInterface
 {
 
-	public function getDailySummary(string $date, array $accountIDs): array
+	public function getDailySummary(string $date, array $accountIDs, string $keyword): array
 	{
 		$entries = AccountEntry::whereIn(AccountEntry::ACCOUNT_ID, $accountIDs)
+			->where(AccountEntry::DESCRIPTION, 'LIKE', "%$keyword%")
 			->whereDate(AccountEntry::DATE, '=', Carbon::parse($date)->toDateString())
 			->selectRaw('SUM(CASE WHEN type = "debit" THEN amount ELSE 0 END) as debitSum')
 			->selectRaw('SUM(CASE WHEN type = "credit" THEN amount ELSE 0 END) as creditSum')
@@ -38,7 +39,7 @@ class AccountRepository implements AccountRepositoryInterface
 		];
 	}
 
-	public function getRangeSummary(string $startDate, string $endDate, array $accountIDs): array
+	public function getRangeSummary(string $startDate, string $endDate, array $accountIDs, string $keyword): array
 	{
 		$dateRange = CarbonPeriod::create($startDate, $endDate);
 		$daysCount = $dateRange->count();
@@ -47,6 +48,7 @@ class AccountRepository implements AccountRepositoryInterface
 		$endDate = Carbon::parse($endDate)->endOfDay();
 
 		$entries = AccountEntry::whereIn(AccountEntry::ACCOUNT_ID, $accountIDs)
+			->where(AccountEntry::DESCRIPTION, 'LIKE', "%$keyword%")
 			->whereBetween(AccountEntry::DATE, [$startDate, $endDate])
 			->selectRaw('SUM(CASE WHEN type = "debit" THEN amount ELSE 0 END) as debitSum')
 			->selectRaw('SUM(CASE WHEN type = "credit" THEN amount ELSE 0 END) as creditSum')
