@@ -45,7 +45,9 @@ class AccountEntryController extends Controller
 			}
 		}
 
-		$entries = auth()->user()->accountEntries($account_id, $keyword, $startDate, $endDate);
+	    $account_ids = $account_id ? [$account_id] : getUserAccountsID();
+
+	    $entries = auth()->user()->accountEntries($account_ids, $keyword, $startDate, $endDate);
 		$entries = AccountEntryResource::collection($entries)->response()->getData(true);
 
 		return CustomResponse::successResponseWithData($entries);

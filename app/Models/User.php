@@ -84,9 +84,8 @@ class User extends Authenticatable implements MustVerifyEmail
 		return number_format($total, 2);
 	}
 
-	public function accountEntries($accountId = null, string $keyword = '', $startDate = '', $endDate = '')
+	public function accountEntries(array $accountIds, string $keyword = '', $startDate = '', $endDate = '')
 	{
-		$accountIds = $accountId ? [$accountId] : $this->accounts->pluck(Account::ID)->toArray();
 
 		$entries = AccountEntry::whereIn(AccountEntry::ACCOUNT_ID, $accountIds)
 			->where(AccountEntry::DESCRIPTION, 'LIKE', "%$keyword%");
