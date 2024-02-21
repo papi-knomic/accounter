@@ -132,4 +132,42 @@ class AccountController extends Controller
 
 		return CustomResponse::successResponseWithData($data);
 	}
+
+
+	/**
+	 * Get summary
+	 */
+	public function getDetailed(Request $request): JsonResponse
+	{
+		$date = $request->input('date');
+		$account_id = $request->input('account_id');
+		$keyword = $request->input('keyword') ?? '';
+
+		if ($date && !isValidDate($date)) {
+			return CustomResponse::errorResponse('Please pass valid date', 401);
+		}
+
+		if (!$date) {
+			$date = Carbon::today()->toDateString();
+		}
+
+		if ($account_id && !accountBelongsToUser($account_id)) {
+			return CustomResponse::errorResponse('Account id is not valid', 403);
+		}
+
+		$account_ids = $account_id ? [$account_id] : getUserAccountsID();
+
+		// Check if the date is a range
+		if (str_contains($date, ',')) {
+			$dates = explode(',', $date);
+			$startDate = trim($dates[0]);
+			$endDate = trim($dates[1]);
+
+			$data = $this->accountRepository->getRangeDetailed($startDate, $endDate, $account_ids, $keyword);
+		} else {
+			$data[$date] = $this->accountRepository->getDailySummary($date, $account_ids, $keyword);
+		}
+
+		return CustomResponse::successResponseWithData($data);
+	}
 }

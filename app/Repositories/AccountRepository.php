@@ -87,4 +87,16 @@ class AccountRepository implements AccountRepositoryInterface
 			'daily_average_transaction' => number_format($dailyAverageTransaction, 2),
 		];
 	}
+
+	public function getRangeDetailed(string $startDate, string $endDate, array $accountIDs, string $keyword): array
+	{
+		$data = [];
+		$dateRange = CarbonPeriod::create($startDate, $endDate);
+		foreach ($dateRange as $date) {
+			$dateString = $date->toDateString();
+			$data[$dateString] = $this->getDailySummary($dateString, $accountIDs, $keyword);
+		}
+
+		return $data;
+	}
 }

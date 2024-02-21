@@ -76,6 +76,8 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
 			Route::get('/', [AccountController::class, 'getAll'])->name('accounts.get');
 			// get spending summary
 			Route::get('/summary', [AccountController::class, 'getSummary'])->name('accounts.summary');
+			// get spending detailed
+			Route::get('/detailed', [AccountController::class, 'getDetailed'])->name('accounts.detailed');
 		});
 	});
 
