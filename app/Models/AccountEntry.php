@@ -6,6 +6,7 @@ use App\Traits\UUID;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class AccountEntry extends Model
 {
@@ -22,6 +23,8 @@ class AccountEntry extends Model
 	public const TYPES = [ self::CREDIT, self::DEBIT];
 	public const ACCOUNT_ID = 'account_id';
 	public const DATE = 'date';
+	public const CATEGORY_ID = 'category_id';
+	const CATEGORY = 'category';
 
 
 	protected $guarded = [ self::ID, self::UUID ];
@@ -30,5 +33,10 @@ class AccountEntry extends Model
 	public function account() : BelongsTo
 	{
 		return $this->belongsTo(Account::class);
+	}
+
+	public function category(): BelongsTo
+	{
+		return $this->belongsTo(Category::class);
 	}
 }

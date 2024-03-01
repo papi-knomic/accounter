@@ -24,7 +24,8 @@ class AccountEntryResource extends JsonResource
 	        AccountEntry::AMOUNT => number_format($request[AccountEntry::AMOUNT], 2),
 	        AccountEntry::TYPE => $request[AccountEntry::TYPE],
 	        AccountEntry::ACCOUNT_ID => $request[AccountEntry::ACCOUNT_ID],
-	        AccountEntry::DATE => $request[AccountEntry::DATE]
+	        AccountEntry::DATE => $request[AccountEntry::DATE],
+	        AccountEntry::CATEGORY => $this->category->name
         ];
     }
 }

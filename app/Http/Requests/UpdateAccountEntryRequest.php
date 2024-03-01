@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Account;
 use App\Models\AccountEntry;
+use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -33,7 +34,8 @@ class UpdateAccountEntryRequest extends FormRequest
 		    AccountEntry::TYPE => [
 			    Rule::in(AccountEntry::TYPES),
 		    ],
-		    AccountEntry::DATE => 'nullable|date'
+		    AccountEntry::DATE => 'nullable|date',
+		    AccountEntry::CATEGORY_ID => 'exists:' . Category::TABLE_NAME . ',' . Category::ID
 	    ];
     }
 }

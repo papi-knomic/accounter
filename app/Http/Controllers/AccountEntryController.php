@@ -63,6 +63,7 @@ class AccountEntryController extends Controller
 		$type = $fields[AccountEntry::TYPE];
 		$accountID = $fields[AccountEntry::ACCOUNT_ID];
 	    $amount = $fields[AccountEntry::AMOUNT];
+		$categoryID = $fields[AccountEntry::CATEGORY_ID] ?? '';
 
 		if ( AccountEntry::DEBIT == $type ) {
 			$account = Account::find($accountID);
@@ -72,12 +73,21 @@ class AccountEntryController extends Controller
 			}
 		}
 
+		if (empty($categoryID)) {
+			if (AccountEntry::CREDIT == $type) {
+				$categoryID = 2;
+			} else {
+				$categoryID = 1;
+			}
+		}
+
 	    $data = [
 		    AccountEntry::DESCRIPTION => $fields[AccountEntry::DESCRIPTION],
 		    AccountEntry::TYPE => $type,
 		    AccountEntry::AMOUNT => $fields[AccountEntry::AMOUNT],
 		    AccountEntry::ACCOUNT_ID => $accountID,
-		    AccountEntry::DATE => $fields[AccountEntry::DATE] ?? ''
+		    AccountEntry::DATE => $fields[AccountEntry::DATE] ?? '',
+		    AccountEntry::CATEGORY_ID => $categoryID
 	    ];
 		$accountEntry = AccountEntryService::create($data);
 		$entry = new AccountEntryResource($accountEntry);

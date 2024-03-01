@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Account;
 use App\Models\AccountEntry;
+use App\Models\Category;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -37,7 +38,8 @@ class CreateAccountEntryRequest extends FormRequest
 		        Rule::in(AccountEntry::TYPES),
 	        ],
 	        AccountEntry::ACCOUNT_ID => 'required|exists:' . Account::TABLE_NAME . ',' . Account::ID,
-	        AccountEntry::DATE => 'nullable|date'
+	        AccountEntry::DATE => 'nullable|date',
+	        AccountEntry::CATEGORY_ID => 'exists:' . Category::TABLE_NAME . ',' . Category::ID
         ];
     }
 }

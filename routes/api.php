@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AccountEntryController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\VerificationCodeController;
 use App\Services\CustomResponse;
 use Illuminate\Support\Facades\Route;
@@ -79,6 +80,8 @@ Route::group(['middleware' => ['json', 'throttle:60,1']], function () {
 			// get spending detailed
 			Route::get('/detailed', [AccountController::class, 'getDetailed'])->name('accounts.detailed');
 		});
+
+		Route::get('categories', [CategoryController::class, 'index'])->name('categories.get');
 	});
 
 });
