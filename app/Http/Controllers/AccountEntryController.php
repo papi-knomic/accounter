@@ -92,6 +92,9 @@ class AccountEntryController extends Controller
 		$accountEntry = AccountEntryService::create($data);
 		$entry = new AccountEntryResource($accountEntry);
 
+		$balance = number_format($accountEntry->account->balance, 2);
+		$entry[Account::BALANCE] = $balance;
+
 		return CustomResponse::successResponseWithData($entry);
     }
 
@@ -111,11 +114,12 @@ class AccountEntryController extends Controller
      */
     public function update(UpdateAccountEntryRequest $request, AccountEntry $accountEntry): JsonResponse
     {
-	    // Validate and update the account entry
-	   $fields = $request->validated();
+		// Validate and update the account entry
+	    $fields = $request->validated();
 
-	   $accountEntry->update($fields);
-	   return CustomResponse::successResponse('Account entry updated successfully');
+		$accountEntry->update($fields);
+
+		return CustomResponse::successResponse('Account entry updated successfully');
     }
 
     /**
