@@ -23,6 +23,8 @@ class AccountEntryController extends Controller
 	    $account_id = $request->input('account_id');
 		$keyword = $request->input('keyword') ?? '';
 		$date = $request->input('date');
+		$categories = $request->input('categories', '');
+		$categories = empty($categories) ? [] : explode(',', $categories);
 
 	    if ($account_id && !accountBelongsToUser($account_id)) {
 		    return CustomResponse::errorResponse('Unauthorized', 403);
@@ -47,7 +49,7 @@ class AccountEntryController extends Controller
 
 	    $account_ids = $account_id ? [$account_id] : getUserAccountsID();
 
-	    $entries = auth()->user()->accountEntries($account_ids, $keyword, $startDate, $endDate);
+	    $entries = auth()->user()->accountEntries($account_ids, $keyword, $startDate, $endDate, $categories);
 		$entries = AccountEntryResource::collection($entries)->response()->getData(true);
 
 		return CustomResponse::successResponseWithData($entries);

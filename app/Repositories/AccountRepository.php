@@ -11,10 +11,13 @@ use Carbon\CarbonPeriod;
 class AccountRepository implements AccountRepositoryInterface
 {
 
-	public function getDailySummary(string $date, array $accountIDs, string $keyword): array
+	public function getDailySummary(string $date, array $accountIDs, string $keyword, array $categories): array
 	{
 		$entries = AccountEntry::whereIn(AccountEntry::ACCOUNT_ID, $accountIDs)
 			->where(AccountEntry::DESCRIPTION, 'LIKE', "%$keyword%")
+			->when(!empty($categories), function ($query) use($categories) {
+				$query->whereIn(AccountEntry::CATEGORY_ID, $categories);
+			})
 			->whereDate(AccountEntry::DATE, '=', Carbon::parse($date)->toDateString())
 			->selectRaw('SUM(CASE WHEN type = "debit" THEN amount ELSE 0 END) as debitSum')
 			->selectRaw('SUM(CASE WHEN type = "credit" THEN amount ELSE 0 END) as creditSum')
@@ -39,7 +42,7 @@ class AccountRepository implements AccountRepositoryInterface
 		];
 	}
 
-	public function getRangeSummary(string $startDate, string $endDate, array $accountIDs, string $keyword): array
+	public function getRangeSummary(string $startDate, string $endDate, array $accountIDs, string $keyword, array $categories): array
 	{
 		$dateRange = CarbonPeriod::create($startDate, $endDate);
 		$daysCount = $dateRange->count();
@@ -50,6 +53,9 @@ class AccountRepository implements AccountRepositoryInterface
 		$entries = AccountEntry::whereIn(AccountEntry::ACCOUNT_ID, $accountIDs)
 			->where(AccountEntry::DESCRIPTION, 'LIKE', "%$keyword%")
 			->whereBetween(AccountEntry::DATE, [$startDate, $endDate])
+			->when(!empty($categories), function ($query) use($categories) {
+				$query->whereIn(AccountEntry::CATEGORY_ID, $categories);
+			})
 			->selectRaw('SUM(CASE WHEN type = "debit" THEN amount ELSE 0 END) as debitSum')
 			->selectRaw('SUM(CASE WHEN type = "credit" THEN amount ELSE 0 END) as creditSum')
 			->selectRaw('COUNT(CASE WHEN type = "debit" THEN 1 END) as debitCount')
@@ -88,13 +94,17 @@ class AccountRepository implements AccountRepositoryInterface
 		];
 	}
 
-	public function getRangeDetailed(string $startDate, string $endDate, array $accountIDs, string $keyword): array
+	public function getRangeDetailed(string $startDate, string $endDate, array $accountIDs, string $keyword, array $categories): array
 	{
 		$data = [];
 		$dateRange = CarbonPeriod::create($startDate, $endDate);
 		foreach ($dateRange as $date) {
 			$dateString = $date->toDateString();
-			$data[$dateString] = $this->getDailySummary($dateString, $accountIDs, $keyword);
+			$result = $this->getDailySummary($dateString, $accountIDs, $keyword, $categories);
+			if (0 == $result['credit_count'] && 0 == $result['debit_count']) {
+				continue;
+			}
+			$data[$dateString] = $result;
 		}
 
 		return $data;

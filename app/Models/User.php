@@ -84,7 +84,7 @@ class User extends Authenticatable implements MustVerifyEmail
 		return number_format($total, 2);
 	}
 
-	public function accountEntries(array $accountIds, string $keyword = '', $startDate = '', $endDate = '')
+	public function accountEntries(array $accountIds, string $keyword = '', $startDate = '', $endDate = '', $categories = [])
 	{
 
 		$entries = AccountEntry::whereIn(AccountEntry::ACCOUNT_ID, $accountIds)
@@ -98,6 +98,10 @@ class User extends Authenticatable implements MustVerifyEmail
 			if (!empty( $startDate) ) {
 				$entries->whereDate(AccountEntry::DATE, '=', Carbon::parse($startDate)->toDateString());
 			}
+		}
+
+		if (!empty($categories)) {
+			$entries->whereIn(AccountEntry::CATEGORY_ID, $categories);
 		}
 
 		return $entries->latest(AccountEntry::DATE)->paginate(25);

@@ -104,6 +104,8 @@ class AccountController extends Controller
 		$date = $request->input('date');
 		$account_id = $request->input('account_id');
 		$keyword = $request->input('keyword') ?? '';
+		$categories = $request->input('categories', '');
+		$categories = empty($categories) ? [] : explode(',', $categories);
 
 		if ($date && !isValidDate($date)) {
 			return CustomResponse::errorResponse('Please pass valid date', 401);
@@ -125,9 +127,9 @@ class AccountController extends Controller
 			$startDate = trim($dates[0]);
 			$endDate = trim($dates[1]);
 
-			$data = $this->accountRepository->getRangeSummary($startDate, $endDate, $account_ids, $keyword);
+			$data = $this->accountRepository->getRangeSummary($startDate, $endDate, $account_ids, $keyword, $categories);
 		} else {
-			$data = $this->accountRepository->getDailySummary($date, $account_ids, $keyword);
+			$data = $this->accountRepository->getDailySummary($date, $account_ids, $keyword, $categories);
 		}
 
 		return CustomResponse::successResponseWithData($data);
@@ -142,6 +144,8 @@ class AccountController extends Controller
 		$date = $request->input('date');
 		$account_id = $request->input('account_id');
 		$keyword = $request->input('keyword') ?? '';
+		$categories = $request->input('categories', '');
+		$categories = empty($categories) ? [] : explode(',', $categories);
 
 		if ($date && !isValidDate($date)) {
 			return CustomResponse::errorResponse('Please pass valid date', 401);
@@ -163,9 +167,9 @@ class AccountController extends Controller
 			$startDate = trim($dates[0]);
 			$endDate = trim($dates[1]);
 
-			$data = $this->accountRepository->getRangeDetailed($startDate, $endDate, $account_ids, $keyword);
+			$data = $this->accountRepository->getRangeDetailed($startDate, $endDate, $account_ids, $keyword, $categories);
 		} else {
-			$data[$date] = $this->accountRepository->getDailySummary($date, $account_ids, $keyword);
+			$data[$date] = $this->accountRepository->getDailySummary($date, $account_ids, $keyword, $categories);
 		}
 
 		return CustomResponse::successResponseWithData($data);
