@@ -109,4 +109,9 @@ class AccountRepository implements AccountRepositoryInterface
 
 		return $data;
 	}
+
+	public function getDetailedByCategory(string $startDate, string $endDate, array $accountIDs, string $keyword, array $categories): array
+	{
+		// TODO: Implement getDetailedByCategory() method.
+	}
 }

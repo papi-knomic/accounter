@@ -174,4 +174,9 @@ class AccountController extends Controller
 
 		return CustomResponse::successResponseWithData($data);
 	}
+
+	public function getDetailedByCategories(Request $request): JsonResponse
+	{
+
+	}
 }
